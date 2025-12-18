@@ -1,0 +1,240 @@
+.delete-missions-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+}
+
+.missions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.missions-table thead {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+}
+
+.missions-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.missions-table td {
+    padding: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.missions-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.mission-id {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.mission-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.mission-status.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.mission-status.active {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.mission-status.completed {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.mission-info {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.mission-info span {
+    margin-right: 1rem;
+}
+
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+}
+
+.delete-btn:disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #64748b;
+}
+
+.delete-confirm-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-confirm-dialog.active {
+    display: flex;
+}
+
+.delete-confirm-content {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.delete-confirm-content h3 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.delete-confirm-content p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.delete-confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-cancel:hover {
+    background-color: #cbd5e1;
+}
+
+.btn-confirm-delete {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-confirm-delete:hover {
+    background-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .missions-table {
+        font-size: 0.875rem;
+    }
+    
+    .missions-table th,
+    .missions-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .mission-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .mission-info span {
+        margin-right: 0;
+    }
+}

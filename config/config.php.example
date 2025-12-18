@@ -1,0 +1,68 @@
+<?php
+/**
+ * Configuration Example File
+ * 
+ * Copy this file to config.php and fill in your values.
+ * DO NOT commit config.php to version control!
+ * 
+ * This file is safe to commit as it contains no sensitive data.
+ */
+return [
+    // Website navigation title
+    'navigation_title' => 'Drohnen-Missions-Mapper',
+    
+    // Token name for remember me functionality
+    'token_name' => 'drone_mapper_token',
+    
+    // Logo path (optional) - path to logo image file relative to project root
+    // Example: 'uploads/logos/logo_1234567890_abc123.png'
+    'logo_path' => '',
+    
+    // Debug mode - set to true to see PHP errors on all pages
+    // WARNING: Set to false in production!
+    'debugMode' => false,
+    
+    // Timezone configuration
+    // See https://www.php.net/manual/en/timezones.php for available timezones
+    'timezone' => 'Europe/Berlin',
+    
+    // Database path (relative to project root or absolute path)
+    // Examples:
+    //   - Relative: 'db/mission-mapper-database.sqlite'
+    //   - Absolute Windows: 'C:/data/mission-mapper-database.sqlite'
+    //   - Absolute Linux: '/var/data/mission-mapper-database.sqlite'
+    // SECURITY: Store database outside web root for better security!
+    'database_path' => 'db/mission-mapper-database.sqlite',
+    
+    // Map default location (latitude, longitude)
+    'map_default_lat' => 51.1657,  // Default: Germany center
+    'map_default_lng' => 10.4515,
+    'map_default_zoom' => 6,  // Zoom level (1-18)
+    
+    // Password hashes (will be generated during setup)
+    // These use password_hash() with PASSWORD_DEFAULT (bcrypt/argon2)
+    'password_hash' => '', // Main application password
+    
+    // API Base URL for background worker
+    // This is used by the background worker to fetch drone data from the API
+    // Examples:
+    //   - Local development: 'http://localhost'
+    //   - Production: 'https://your-domain.com'
+    //   - With port: 'http://localhost:8080'
+    // If not set, the worker will try to auto-detect (may not work for CLI execution)
+    'api_base_url' => '', // Leave empty for auto-detection (may require manual configuration for CLI)
+    
+    // Enable/disable UAV-BOS API integration
+    // If false, the API connection button will be hidden and API warnings will not be shown
+    'use_uav_bos_api' => true, // Set to false to disable API features
+    
+    // Log level configuration
+    // Options: 'debug', 'info', 'warning', 'error'
+    // Only messages at or above this level will be logged
+    // debug: logs everything (most verbose)
+    // info: logs info, warnings, and errors
+    // warning: logs warnings and errors only
+    // error: logs errors only (least verbose)
+    'log_level' => 'info', // Default log level
+];
+

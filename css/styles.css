@@ -1,0 +1,239 @@
+/* Modern Design System - Unified Styles */
+
+/* ===== Base Styles ===== */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    /* overflow: hidden removed - only apply to map.php and view_mission.php */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    color: #2d3748;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3c72;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2a5298;
+    margin: 1.5rem 0 1rem 0;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 1rem 0 0.75rem 0;
+}
+
+/* ===== Footer ===== */
+footer {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 3rem;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide footer on map pages to prevent scroll */
+body:has(#map) footer,
+body:has(main #map) footer {
+    display: none;
+}
+
+footer a {
+    color: #a5d8ff;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* ===== Buttons ===== */
+button,
+input[type="submit"],
+.btn-submit,
+.btn-login {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    display: inline-block;
+    text-align: center;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.btn-submit:hover,
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+button:active,
+input[type="submit"]:active,
+.btn-submit:active,
+.btn-login:active {
+    transform: translateY(0);
+}
+
+form button {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* ===== Forms ===== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+input[type="time"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: #fff;
+    color: #2d3748;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232d3748' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* ===== Messages ===== */
+.error-message {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 2px solid #fecaca;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.success-message {
+    color: #059669;
+    background-color: #ecfdf5;
+    border: 2px solid #a7f3d0;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+/* ===== Links ===== */
+a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    main {
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+}
+

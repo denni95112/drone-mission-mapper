@@ -1,0 +1,34 @@
+# Configuration
+config/config.php
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+db/
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+tmp/
+temp/
+cache/
+
