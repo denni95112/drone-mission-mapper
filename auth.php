@@ -70,6 +70,15 @@ function isAuthenticated() {
 }
 
 /**
+ * Check if the current user has admin privileges.
+ * For drone-mission-mapper, any authenticated user can run admin actions (migrations, updater).
+ * Can be extended later with config['admin_hash'] and password check.
+ */
+function isAdmin() {
+    return isAuthenticated();
+}
+
+/**
  * Require authentication, redirect to login if not authenticated
  */
 function requireAuth() {

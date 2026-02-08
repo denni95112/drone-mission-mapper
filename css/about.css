@@ -97,6 +97,56 @@
     margin: 0;
 }
 
+.about-content-inner {
+    margin: 0;
+}
+
+.changelog-link {
+    color: #1e3c72;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.changelog-link:hover {
+    text-decoration: none;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.project-item {
+    padding: 1rem;
+    background: #f7fafc;
+    border-radius: 8px;
+    border-left: 4px solid #1e3c72;
+}
+
+.project-item h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: #1e3c72;
+}
+
+.project-description {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.95rem;
+    color: #4a5568;
+}
+
+.project-link {
+    display: inline-block;
+    color: #2a5298;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.project-link:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 768px) {
     .about-container {
         padding: 1rem;

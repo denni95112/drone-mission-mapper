@@ -265,6 +265,119 @@ function validateCSRFToken($token) {
 }
 
 /**
+ * Get CSRF token for forms/AJAX (ensures token exists)
+ * @return string CSRF token
+ */
+function getCSRFToken() {
+    return generateCSRFToken();
+}
+
+/**
+ * Convert datetime from UTC to local timezone for display
+ * @param string|null $utcTime UTC datetime string (e.g. 'Y-m-d H:i:s')
+ * @param string $format Output format (default: 'Y-m-d H:i:s')
+ * @return string Local datetime string (empty string if input is null/empty)
+ */
+function toLocalTime($utcTime, $format = 'Y-m-d H:i:s') {
+    $config = getConfig();
+    $timezone = $config['timezone'] ?? 'Europe/Berlin';
+    if ($utcTime === null || $utcTime === '') {
+        return '';
+    }
+    try {
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $utcTime, new DateTimeZone('UTC'));
+        if (!$date) {
+            $date = new DateTime($utcTime, new DateTimeZone('UTC'));
+        }
+        $date->setTimezone(new DateTimeZone($timezone));
+        return $date->format($format);
+    } catch (Exception $e) {
+        return $utcTime;
+    }
+}
+
+/**
+ * Check if a newer version is available on GitHub
+ * @param string $currentVersion Current application version
+ * @param string $owner GitHub repository owner
+ * @param string $repo GitHub repository name
+ * @return array|null Returns array with 'available', 'version', 'url' or null on error
+ */
+function checkGitHubVersion($currentVersion, $owner, $repo) {
+    $cacheFile = __DIR__ . '/../cache/github_version_cache.json';
+    $cacheDuration = 3600;
+    $cacheDir = dirname($cacheFile);
+    if (!is_dir($cacheDir)) {
+        @mkdir($cacheDir, 0755, true);
+    }
+    if (file_exists($cacheFile)) {
+        $cache = @json_decode(file_get_contents($cacheFile), true);
+        if ($cache && isset($cache['timestamp']) && (time() - $cache['timestamp']) < $cacheDuration && isset($cache['data']['version'])) {
+            $data = $cache['data'];
+            $data['available'] = version_compare($data['version'], $currentVersion, '>');
+            return $data;
+        }
+    }
+    $url = "https://api.github.com/repos/{$owner}/{$repo}/releases";
+    if (!function_exists('curl_init')) {
+        return null;
+    }
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'User-Agent: Drone-Mission-Mapper',
+        'Accept: application/vnd.github.v3+json'
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($httpCode !== 200 || !$response) {
+        return null;
+    }
+    $releases = json_decode($response, true);
+    if (!is_array($releases) || empty($releases)) {
+        return null;
+    }
+    foreach ($releases as $release) {
+        if (!empty($release['draft']) || !empty($release['prerelease']) || empty($release['tag_name'])) {
+            continue;
+        }
+        $latestVersion = ltrim($release['tag_name'], 'v');
+        $data = [
+            'available' => version_compare($latestVersion, $currentVersion, '>'),
+            'version' => $latestVersion,
+            'url' => $release['html_url'] ?? "https://github.com/{$owner}/{$repo}/releases/latest"
+        ];
+        @file_put_contents($cacheFile, json_encode(['timestamp' => time(), 'data' => $data]));
+        return $data;
+    }
+    return null;
+}
+
+/**
+ * Send install/update tracking webhook to open-drone-tools.de (fire-and-forget).
+ */
+function sendInstallTrackingWebhook($repo, $version) {
+    $url = 'https://open-drone-tools.de/webhook.php';
+    $payload = json_encode(['repo' => trim($repo), 'version' => trim($version)]);
+    if (function_exists('curl_init')) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        @curl_exec($ch);
+        @curl_close($ch);
+    }
+}
+
+/**
  * Validate latitude value
  * @param mixed $lat Latitude value
  * @return bool True if valid latitude (-90 to 90)
