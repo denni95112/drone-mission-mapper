@@ -164,6 +164,12 @@ $db->exec('CREATE INDEX IF NOT EXISTS idx_map_icon_positions_recorded_at ON map_
 $db->exec('CREATE INDEX IF NOT EXISTS idx_address_cache_lat_lng ON address_cache(latitude, longitude)');
 $db->exec('CREATE INDEX IF NOT EXISTS idx_address_cache_cached_at ON address_cache(cached_at)');
 
+// Notify install tracking webhook (fire-and-forget)
+require_once __DIR__ . '/version.php';
+if (function_exists('sendInstallTrackingWebhook')) {
+    sendInstallTrackingWebhook(GITHUB_REPO_NAME, (string) APP_VERSION);
+}
+
 echo "Database setup completed successfully! Redirecting...";
 
 header("Refresh: 2; url=index.php");

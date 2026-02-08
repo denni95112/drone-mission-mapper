@@ -2,6 +2,8 @@
 
 Eine webbasierte Anwendung zur Visualisierung und Verwaltung von Drohnen-Missionen auf einer interaktiven Karte mit OpenStreetMap.
 
+📖 **Ausführliche Anleitung**: [Wiki](https://github.com/denni95112/drone-mission-mapper/wiki)
+
 ## 📋 Beschreibung
 
 Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durchführung und Nachbereitung von Drohnen-Missionen. Die Anwendung ermöglicht die Erstellung von Missionsgebieten mit Raster-Grids, die Platzierung von Icons (Fahrzeuge, Personen, Drohnen, etc.), die Erfassung von Icon-Positionen über die Zeit und die Visualisierung von Missionsdaten auf einer interaktiven Karte mit Zeitstrahl.
@@ -86,7 +88,7 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
 3. **Erstkonfiguration**
    - Öffne die Anwendung im Browser
    - Du wirst automatisch zum Setup weitergeleitet
-   - Fülle das Setup-Formular aus:
+   - Fülle das Setup-Formular aus (Details: [Wiki – Einrichtung](https://github.com/denni95112/drone-mission-mapper/wiki/Einrichtung)):
      - Anwendungsname
      - Passwort
      - Datenbankpfad (optional, Standard: `db/mission-mapper-database.sqlite`)
@@ -233,8 +235,8 @@ drone-mission-mapper/
 ├── tmp/                         # Temporäre Dateien
 │   └── exports/                 # Export-Dateien
 ├── updater/                     # Update-Tool (Admin)
-├── uploads/                    # Upload-Verzeichnis
-│   └── logos/                  # Logo-Uploads
+├── uploads/                     # Upload-Verzeichnis
+│   └── logos/                   # Logo-Uploads
 ├── auth.php                     # Authentifizierung
 ├── index.php                    # Login-Seite
 ├── logout.php                   # Logout-Funktion
@@ -280,7 +282,21 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 - **CSRF-Schutz**: CSRF-Token für alle Formulare
 - **Input-Validierung**: Umfassende Validierung aller Benutzereingaben
 
-## 📖 Verwendung
+## 📖 Verwendung & Dokumentation
+
+Die ausführliche Bedienungsanleitung mit allen Funktionen findet sich im **[Wiki](https://github.com/denni95112/drone-mission-mapper/wiki)**:
+
+| Thema | Wiki-Seite |
+|-------|------------|
+| Einstieg | [Einrichtung](https://github.com/denni95112/drone-mission-mapper/wiki/Einrichtung), [Anmeldung (Login)](https://github.com/denni95112/drone-mission-mapper/wiki/Anmeldung-Login) |
+| Karte & Missionen | [Karte und Missionen](https://github.com/denni95112/drone-mission-mapper/wiki/Karte-und-Missionen), [Mission erstellen](https://github.com/denni95112/drone-mission-mapper/wiki/Mission-erstellen), [Mission starten](https://github.com/denni95112/drone-mission-mapper/wiki/Mission-starten) |
+| Icons & Raster | [Icons platzieren](https://github.com/denni95112/drone-mission-mapper/wiki/Icons-platzieren), [Bereiche markieren](https://github.com/denni95112/drone-mission-mapper/wiki/Bereiche-markieren) |
+| Zeitstrahl | [Zeitstrahl (Live und Historie)](https://github.com/denni95112/drone-mission-mapper/wiki/Zeitstrahl) |
+| Teilen & Export | [Mission teilen](https://github.com/denni95112/drone-mission-mapper/wiki/Mission-teilen), [View-Only-Modus](https://github.com/denni95112/drone-mission-mapper/wiki/View-Only-Modus), [KML Import/Export](https://github.com/denni95112/drone-mission-mapper/wiki/KML-Import-Export), [CSV-Export](https://github.com/denni95112/drone-mission-mapper/wiki/Export-CSV) |
+| Verwaltung | [Einstellungen](https://github.com/denni95112/drone-mission-mapper/wiki/Einstellungen), [Datenbank-Update](https://github.com/denni95112/drone-mission-mapper/wiki/Datenbank-Update), [Updates](https://github.com/denni95112/drone-mission-mapper/wiki/Updates) |
+| Sonstiges | [Changelog](https://github.com/denni95112/drone-mission-mapper/wiki/Changelog), [Über](https://github.com/denni95112/drone-mission-mapper/wiki/Über) |
+
+---
 
 ### Login
 
@@ -302,7 +318,7 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 
 1. Wähle eine Mission aus der Missionsliste
 2. Klicke auf "Mission starten"
-3. Die Mission wird aktiv und Drohnen-Tracking beginnt
+3. Die Mission wird aktiv; du kannst Icons platzieren, Bereiche markieren und den Zeitstrahl nutzen
 
 ### Icons platzieren
 
@@ -364,6 +380,7 @@ Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe [LICENSE](LICENSE) Da
 
 - GitHub: [@denni95112](https://github.com/denni95112)
 - Repository: [drone-mission-mapper](https://github.com/denni95112/drone-mission-mapper)
+- Teil von [Open Drone Tools](https://open-drone-tools.de)
 
 ## 🤝 Beitragen
 

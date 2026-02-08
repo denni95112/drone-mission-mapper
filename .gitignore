@@ -32,3 +32,6 @@ tmp/
 temp/
 cache/
 
+# Wiki (GitHub manages wiki in separate clone)
+drone-mission-mapper.wiki/
+
