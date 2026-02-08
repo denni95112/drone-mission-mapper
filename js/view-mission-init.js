@@ -296,68 +296,6 @@ function initViewMissionMap(mapLat, mapLng, mapZoom, missionData, missionId) {
         }
     });
     
-    /**
-     * Initialize API connection toggle button for view mode
-     */
-    function initApiConnectionToggle() {
-        const toggleBtn = document.getElementById('api-connection-toggle');
-        if (!toggleBtn) return;
-        
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-            toggleBtn.style.display = 'none';
-            return;
-        }
-        
-        let droneTracker = null;
-        let isConnected = false;
-        
-        function updateButtonState() {
-            const icon = document.getElementById('api-connection-icon');
-            const text = document.getElementById('api-connection-text');
-            
-            if (isConnected) {
-                toggleBtn.classList.remove('disconnected');
-                if (icon) icon.textContent = '🔌';
-                if (text) text.textContent = 'Verbunden';
-                toggleBtn.title = 'API-Verbindung trennen';
-            } else {
-                toggleBtn.classList.add('disconnected');
-                if (icon) icon.textContent = '🔴';
-                if (text) text.textContent = 'Getrennt';
-                toggleBtn.title = 'API-Verbindung herstellen';
-            }
-        }
-        
-        toggleBtn.addEventListener('click', () => {
-            if (isConnected) {
-                if (droneTracker) {
-                    droneTracker.stop();
-                    droneTracker = null;
-                }
-                isConnected = false;
-            } else {
-                if (typeof DroneTracker !== 'undefined') {
-                    droneTracker = new DroneTracker(map, 'api/drones.php');
-                    const missionId = window.viewOnlyManager?.missionId || null;
-                    droneTracker.start(missionId);
-                    isConnected = true;
-                } else {
-                    alert('DroneTracker ist nicht verfügbar. Bitte laden Sie die Seite neu.');
-                }
-            }
-            updateButtonState();
-        });
-        
-        isConnected = false;
-        updateButtonState();
-    }
-    
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApiConnectionToggle);
-    } else {
-        initApiConnectionToggle();
-    }
-    
     (function initLegendToggle() {
         function isMobile() {
             return window.innerWidth <= 768;

@@ -38,7 +38,8 @@ class UpdateChecker {
     
     async checkForUpdates() {
         try {
-            const response = await safeFetch('api/check_update.php');
+            const fetchFn = typeof window.safeFetch === 'function' ? window.safeFetch : fetch;
+            const response = await fetchFn('api/check_update.php');
             const data = await response.json();
             
             if (data.has_update) {

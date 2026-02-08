@@ -673,56 +673,6 @@ body.header-expanded .sidebar {
     line-height: 1;
 }
 
-/* API Connection Toggle Button */
-.api-connection-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: white;
-    border: 2px solid #3b82f6;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #3b82f6;
-    cursor: pointer;
-    z-index: 1002; /* Above timeline (1001) */
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 140px;
-    justify-content: center;
-}
-
-.api-connection-toggle:hover {
-    background: #eff6ff;
-    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.35);
-    transform: translateY(-2px);
-}
-
-.api-connection-toggle.disconnected {
-    background: #fee2e2;
-    border-color: #ef4444;
-    color: #ef4444;
-}
-
-.api-connection-toggle.disconnected:hover {
-    background: #fecaca;
-    box-shadow: 0 6px 25px rgba(239, 68, 68, 0.35);
-}
-
-.api-connection-toggle #api-connection-icon {
-    font-size: 1.25rem;
-    line-height: 1;
-}
-
-.api-connection-toggle #api-connection-text {
-    font-size: 0.875rem;
-    font-weight: 600;
-}
-
 .reload-page-btn {
     position: fixed;
     top: 80px;
@@ -765,17 +715,6 @@ body.header-expanded .sidebar {
     
     body.header-expanded .timeline-history-info {
         top: 130px;
-    }
-    
-    .api-connection-toggle {
-        bottom: 80px; /* Above timeline on mobile */
-        right: 10px;
-        min-width: auto;
-        padding: 0.5rem 0.75rem;
-    }
-    
-    .api-connection-toggle #api-connection-text {
-        display: none; /* Hide text on mobile, show only icon */
     }
     
     .sidebar-open-btn {
@@ -1530,8 +1469,6 @@ button:disabled {
     #zeitstrahl,
     .zeitstrahl,
     #zeitstrahl-open-btn,
-    #api-connection-toggle,
-    .api-connection-toggle,
     .leaflet-control,
     .leaflet-control-container {
         display: none !important;

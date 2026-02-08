@@ -52,10 +52,6 @@ return [
     // If not set, the worker will try to auto-detect (may not work for CLI execution)
     'api_base_url' => '', // Leave empty for auto-detection (may require manual configuration for CLI)
     
-    // Enable/disable UAV-BOS API integration
-    // If false, the API connection button will be hidden and API warnings will not be shown
-    'use_uav_bos_api' => true, // Set to false to disable API features
-    
     // Log level configuration
     // Options: 'debug', 'info', 'warning', 'error'
     // Only messages at or above this level will be logged

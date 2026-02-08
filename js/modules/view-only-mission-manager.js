@@ -39,11 +39,6 @@ class ViewOnlyMissionManager {
         // Load icons
         this.loadIcons();
         
-        // Load drones (only if API is enabled)
-        if (!window.APP_CONFIG || window.APP_CONFIG.useUavBosApi !== false) {
-            this.loadDrones();
-        }
-        
         // Movement toggle
         const movementToggle = document.getElementById('show-movement-toggle');
         if (movementToggle) {
@@ -938,12 +933,7 @@ class ViewOnlyMissionManager {
     }
     
     async loadDrones() {
-        // Don't load drones if API is disabled
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-            console.log('API is disabled, skipping drone loading');
-            return;
-        }
-        
+        return; // External API drone loading removed
         try {
             console.log('Loading drones for mission:', this.missionId);
             // Include token in request if we have it (for token-based access)

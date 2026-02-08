@@ -165,7 +165,6 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
    **Cache-Funktionalität überprüfen:**
    - **Config-Cache**: Lade eine Seite mehrmals - die Config-Datei sollte nur einmal pro Änderung gelesen werden
    - **Mission-Cache**: Lade dieselbe Mission mehrmals - erste Ladung aus Datenbank, weitere aus Cache
-   - **API-Cache**: Rufe `/api/drones.php` mehrmals auf - erste Anfrage generiert Daten, weitere (innerhalb 3 Sekunden) aus Cache
    - **Client-Cache**: Öffne Browser DevTools → Network-Tab - API-Aufrufe sollten gecacht werden
    
    **Performance-Monitoring:**
@@ -179,7 +178,6 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
 drone-mission-mapper/
 ├── api/                         # API-Endpunkte
 │   ├── check_update.php         # Update-Prüfung
-│   ├── drones.php               # Drohnen-Daten API
 │   ├── export_positions.php     # Positions-Export
 │   ├── kml.php                  # KML Import/Export
 │   ├── log.php                  # Logging API
@@ -215,7 +213,6 @@ drone-mission-mapper/
 │   ├── map-utils.js             # Map-Utilities
 │   ├── map.js                   # Map-Modul-Loader
 │   ├── modules/                 # JavaScript-Module
-│   │   ├── drone-tracker.js     # Drohnen-Tracking
 │   │   ├── export-positions.js  # Positions-Export
 │   │   ├── kml-manager.js        # KML-Verwaltung
 │   │   ├── map-type-manager.js   # Karten-Typ-Verwaltung
@@ -269,7 +266,6 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 - `timezone`: Zeitzone für Datums-/Zeitanzeige
 - `logo_path`: (Optional) Pfad zum Logo
 - `debugMode`: Debug-Modus aktivieren/deaktivieren
-- `use_uav_bos_api`: UAV-BOS API aktivieren/deaktivieren
 - `log_level`: Log-Level (debug, info, warning, error)
 
 ## 🔐 Sicherheit

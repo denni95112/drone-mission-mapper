@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $map_default_lat = floatval($_POST['map_default_lat'] ?? 51.1657);
     $map_default_lng = floatval($_POST['map_default_lng'] ?? 10.4515);
     $map_default_zoom = intval($_POST['map_default_zoom'] ?? 6);
-    $use_uav_bos_api = isset($_POST['use_uav_bos_api']) && $_POST['use_uav_bos_api'] === '1';
     $log_level = trim($_POST['log_level'] ?? 'info');
     
     $password_hash = $config['password_hash'] ?? '';
@@ -144,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updatedConfig['map_default_lat'] = $map_default_lat;
         $updatedConfig['map_default_lng'] = $map_default_lng;
         $updatedConfig['map_default_zoom'] = $map_default_zoom;
-        $updatedConfig['use_uav_bos_api'] = $use_uav_bos_api;
         $updatedConfig['log_level'] = $log_level;
         
         $configDir = __DIR__ . '/config';
@@ -322,19 +320,6 @@ $timezones = [
                         <input type="number" id="map_default_zoom" name="map_default_zoom" 
                                value="<?php echo htmlspecialchars($config['map_default_zoom'] ?? 6); ?>" 
                                min="1" max="18" required>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h2>API-Einstellungen</h2>
-                    
-                    <div class="form-group">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="use_uav_bos_api" name="use_uav_bos_api" value="1" 
-                                   <?php echo ($config['use_uav_bos_api'] ?? true) ? 'checked' : ''; ?>>
-                            <span>UAV-BOS API aktivieren</span>
-                        </label>
-                        <small>Wenn deaktiviert, wird der API-Verbindungsbutton ausgeblendet</small>
                     </div>
                 </div>
                 

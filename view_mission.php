@@ -139,7 +139,6 @@ try {
     <script src="js/map-utils.js"></script>
     <script src="js/modules/map-type-manager.js"></script>
     <script src="js/modules/sidebar-manager.js"></script>
-    <script src="js/modules/drone-tracker.js"></script>
     <script src="js/modules/view-only-mission-manager.js"></script>
     <script src="js/view-mission-init.js"></script>
 </head>
@@ -312,17 +311,10 @@ try {
         </div>
     </main>
     
-    <!-- API Connection Toggle Button (hidden in view mode) -->
-    <button type="button" id="api-connection-toggle" class="api-connection-toggle" title="API-Verbindung ein/aus" style="display: none;">
-        <span id="api-connection-icon">🔌</span>
-        <span id="api-connection-text">Verbunden</span>
-    </button>
-    
     <?php include 'includes/footer.php'; ?>
     
     <script>
         window.APP_CONFIG = {
-            useUavBosApi: <?= json_encode($config['use_uav_bos_api'] ?? true) ?>,
             logLevel: <?= json_encode($config['log_level'] ?? 'info') ?>
         };
         

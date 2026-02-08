@@ -25,78 +25,6 @@
     }
 })();
 
-/**
- * Initialize API connection toggle button
- */
-function initApiConnectionToggle() {
-    const toggleBtn = document.getElementById('api-connection-toggle');
-    if (!toggleBtn) {
-        console.warn('API connection toggle button not found, retrying...');
-        setTimeout(initApiConnectionToggle, 200);
-        return;
-    }
-    
-    if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-        toggleBtn.style.display = 'none';
-        return;
-    }
-    
-    if (!window.droneTracker) {
-        console.warn('DroneTracker not available yet, retrying...');
-        setTimeout(initApiConnectionToggle, 200);
-        return;
-    }
-    
-    console.log('Initializing API connection toggle button');
-    
-    function updateButtonState() {
-        const actualToggleBtn = document.getElementById('api-connection-toggle');
-        if (!actualToggleBtn) return;
-        
-        const isConnected = window.droneTracker.isConnected;
-        const icon = document.getElementById('api-connection-icon');
-        const text = document.getElementById('api-connection-text');
-        
-        if (isConnected) {
-            actualToggleBtn.classList.remove('disconnected');
-            if (icon) icon.textContent = '🔌';
-            if (text) text.textContent = 'Verbunden';
-            actualToggleBtn.title = 'API-Verbindung trennen';
-        } else {
-            actualToggleBtn.classList.add('disconnected');
-            if (icon) icon.textContent = '🔴';
-            if (text) text.textContent = 'Getrennt';
-            actualToggleBtn.title = 'API-Verbindung herstellen';
-        }
-    }
-    
-    toggleBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        console.log('API toggle clicked. Current state:', window.droneTracker.isConnected);
-        
-        if (window.droneTracker.isConnected) {
-            console.log('Disconnecting from API...');
-            window.droneTracker.stop();
-            window.droneTracker.isConnected = false;
-            
-            if (window.zeitstrahlManager && window.zeitstrahlManager.stopLiveUpdates) {
-                window.zeitstrahlManager.stopLiveUpdates();
-                console.log('Stopped ZeitstrahlManager live updates');
-            }
-        } else {
-            console.log('Connecting to API...');
-            const missionId = window.missionManager?.currentMissionId || null;
-            window.droneTracker.start(missionId);
-            window.droneTracker.isConnected = true;
-        }
-        updateButtonState();
-    });
-    
-    updateButtonState();
-}
-
 let initRetryCount = 0;
 const MAX_INIT_RETRIES = 50;
 
@@ -114,19 +42,8 @@ function initMissionManager() {
         window.sidebarManager = new SidebarManager();
     }
     
-    if (!window.droneTracker && typeof DroneTracker !== 'undefined') {
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-            window.droneTracker = new DroneTracker(window.map, 'api/drones.php');
-            window.droneTracker.start();
-            window.droneTracker.isConnected = true;
-        } else {
-            window.droneTracker = new DroneTracker(window.map, 'api/drones.php');
-            window.droneTracker.isConnected = false;
-        }
-    }
-    
     if (!window.zeitstrahlManager && typeof ZeitstrahlManager !== 'undefined') {
-        window.zeitstrahlManager = new ZeitstrahlManager(window.map, window.droneTracker);
+        window.zeitstrahlManager = new ZeitstrahlManager(window.map, null);
     }
     
     if (typeof L === 'undefined' || typeof L.Control === 'undefined' || typeof L.Control.Draw === 'undefined') {
@@ -170,7 +87,7 @@ function initMissionManager() {
     
     if (!window.missionManager) {
         try {
-            window.missionManager = new MissionManager(window.droneTracker, window.map);
+            window.missionManager = new MissionManager(null, window.map);
             console.log('MissionManager initialized successfully');
         } catch (error) {
             console.error('Error initializing MissionManager:', error);
@@ -205,7 +122,6 @@ function initMissionManager() {
         }
     }
     
-    initApiConnectionToggle();
     initReloadPageButton();
 }
 

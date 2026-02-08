@@ -471,9 +471,8 @@ class ZeitstrahlManager {
         const dronePositions = timeData.positions.filter(pos => pos.type === 'drone');
         const selectedTime = this.parseSQLiteDate(timeData.time);
         
-        // Add markers for each drone at this time (only if API is enabled)
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-            dronePositions.forEach(pos => {
+        // Add markers for each drone at this time
+        dronePositions.forEach(pos => {
                 const marker = L.marker([pos.latitude, pos.longitude], {
                     icon: L.divIcon({
                         className: 'drone-marker-historical',
@@ -514,7 +513,6 @@ class ZeitstrahlManager {
                     });
                 }
             });
-        }
         
         // For icons, show all icons that exist at this time (placed before or at this time)
         // Use the latest position of each icon up to the selected time
@@ -962,37 +960,20 @@ class ZeitstrahlManager {
             this.updateLiveTime();
         }, 1000); // Update every second
         
-        // Subscribe to DroneTracker updates instead of fetching independently
-        if (this.droneTracker && window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-            // Ensure DroneTracker is running (if it was stopped, start it)
+        // Subscribe to DroneTracker updates if available (external API feature removed)
+        if (this.droneTracker) {
             if (this.droneTracker.isStopped || !this.droneTracker.updateInterval) {
-                console.log('Starting DroneTracker for timeline live mode');
                 const missionId = this.currentMissionId || null;
                 this.droneTracker.start(missionId);
             }
-            
-            // Define callback to handle drone data updates
             this.liveUpdateCallback = (drones) => {
                 this.updateLiveMarkers(drones);
             };
-            
-            // Subscribe to DroneTracker
             this.droneTracker.subscribe(this.liveUpdateCallback);
-            
-            // If DroneTracker already has data, update immediately
             if (this.droneTracker.currentDrones && this.droneTracker.currentDrones.length > 0) {
                 this.updateLiveMarkers(this.droneTracker.currentDrones);
-            } else {
-                // Trigger an immediate fetch if no data is available
-                if (!this.droneTracker.isStopped) {
-                    this.droneTracker.fetchAndUpdate();
-                }
-            }
-        } else {
-            if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-                console.log('DroneTracker disabled - API usage is disabled');
-            } else {
-                console.warn('DroneTracker not available for timeline live mode');
+            } else if (!this.droneTracker.isStopped && this.droneTracker.fetchAndUpdate) {
+                this.droneTracker.fetchAndUpdate();
             }
         }
     }
@@ -1091,12 +1072,6 @@ class ZeitstrahlManager {
      */
     updateLiveMarkers(drones) {
         if (!drones || drones.length === 0) return;
-        
-        // Don't show drones if API is disabled
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-            this.clearMarkers();
-            return;
-        }
         
         // Only show drones if mission is active
         if (!this.currentMission || this.currentMission.status !== 'active') {

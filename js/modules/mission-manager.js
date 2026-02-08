@@ -881,11 +881,6 @@ class MissionManager {
             if (data.success) {
                 this.showStatus('Mission gestartet! Daten werden alle 30 Sekunden gespeichert.', 'info');
                 
-                // Show warning about API connection only if API is enabled
-                if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-                    alert('⚠️ WICHTIG: Die API-Verbindung wird unterbrochen, wenn Sie diese Seite schließen!\n\nBitte lassen Sie diese Seite geöffnet, damit die Drohnendaten kontinuierlich gesammelt werden können.');
-                }
-                
                 const startBtn = document.getElementById('start-mission-btn');
                 const stopBtn = document.getElementById('stop-mission-btn');
                 const missionIdInput = document.getElementById('mission_id');
@@ -933,7 +928,7 @@ class MissionManager {
                 }
                 this.missionActive = true; // Mission is now active
                 this.currentMissionStatus = 'active';
-                this.droneTracker.setMissionId(missionId);
+                if (this.droneTracker) this.droneTracker.setMissionId(missionId);
                 
                 // Update share button visibility
                 if (window.shareManager) {
@@ -942,33 +937,6 @@ class MissionManager {
                 
                 // Show mission tools tab and make it active
                 this.showMissionToolsTab();
-                
-                // Show API connection toggle button only if API is enabled
-                const apiToggleBtn = document.getElementById('api-connection-toggle');
-                if (apiToggleBtn) {
-                    if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-                        apiToggleBtn.style.display = 'block';
-                    } else {
-                        apiToggleBtn.style.display = 'none';
-                    }
-                }
-                
-                // Update API connection button state
-                if (window.droneTracker && window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-                    const icon = document.getElementById('api-connection-icon');
-                    const text = document.getElementById('api-connection-text');
-                    if (icon) icon.textContent = '🔌';
-                    if (text) text.textContent = 'Verbunden';
-                    if (apiToggleBtn) {
-                        apiToggleBtn.classList.remove('disconnected');
-                        apiToggleBtn.title = 'API-Verbindung trennen';
-                    }
-                }
-                
-                // Add beforeunload warning only if API is enabled
-                if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-                    this.setupPageCloseWarning();
-                }
                 
                 // Store in sessionStorage
                 try {
@@ -1073,11 +1041,6 @@ class MissionManager {
     }
     
     setupPageCloseWarning() {
-        // Don't set up warning if API is disabled
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-            return;
-        }
-        
         // Remove existing listener if any
         if (this.beforeUnloadHandler) {
             window.removeEventListener('beforeunload', this.beforeUnloadHandler);
@@ -1096,11 +1059,6 @@ class MissionManager {
     }
     
     showApiConnectionWarning() {
-        // Don't show warning if API is disabled
-        if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi === false) {
-            return;
-        }
-        
         // Remove existing warning if any
         const existingWarning = document.getElementById('api-connection-warning');
         if (existingWarning) {
@@ -1388,33 +1346,8 @@ class MissionManager {
             window.shareManager.updateShareButton();
         }
         
-        // Show API connection toggle button when mission is loaded (only if API is enabled)
-        const apiToggleBtn = document.getElementById('api-connection-toggle');
-        if (apiToggleBtn && this.currentMissionId) {
-            if (window.APP_CONFIG && window.APP_CONFIG.useUavBosApi !== false) {
-                apiToggleBtn.style.display = 'block';
-            } else {
-                apiToggleBtn.style.display = 'none';
-            }
-        }
-        
         // If mission is active, automatically start live updates
         if (this.missionActive && window.zeitstrahlManager) {
-            // Ensure API connection is active
-            if (window.droneTracker && !window.droneTracker.isConnected) {
-                window.droneTracker.start(this.currentMissionId);
-                window.droneTracker.isConnected = true;
-                // Update API connection button state
-                if (apiToggleBtn) {
-                    apiToggleBtn.classList.remove('disconnected');
-                    const icon = document.getElementById('api-connection-icon');
-                    const text = document.getElementById('api-connection-text');
-                    if (icon) icon.textContent = '🔌';
-                    if (text) text.textContent = 'Verbunden';
-                    apiToggleBtn.title = 'API-Verbindung trennen';
-                }
-            }
-            
             // Wait a bit for the map to be ready
             const timeoutId1 = setTimeout(() => {
                 // Show timeline if not already visible
@@ -1642,19 +1575,10 @@ class MissionManager {
             }
         }
         
-        // Hide API connection toggle button (only show when mission is active/loaded)
-        const apiToggleBtn = document.getElementById('api-connection-toggle');
-        if (apiToggleBtn) {
-            apiToggleBtn.style.display = 'none';
-        }
-        
-        // Disconnect from API if connected
-        if (this.droneTracker && this.droneTracker.isConnected) {
+        if (this.droneTracker) {
             this.droneTracker.stop();
-            this.droneTracker.isConnected = false;
+            if (this.droneTracker.isConnected !== undefined) this.droneTracker.isConnected = false;
         }
-        
-        // Remove API connection warning if any
         this.hideApiConnectionWarning();
         
         this.showStatus('Formular zurückgesetzt. Sie können jetzt eine neue Mission erstellen.', 'info');

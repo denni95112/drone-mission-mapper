@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'map_default_lng' => $map_default_lng,
             'map_default_zoom' => $map_default_zoom,
             'password_hash' => $password_hash,
-            'use_uav_bos_api' => false,
             'log_level' => 'info',
         ];
         
@@ -251,16 +250,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="map_default_zoom">Zoom-Level (1-18):</label>
                 <input type="number" id="map_default_zoom" name="map_default_zoom" value="6" min="1" max="18" required>
-            </div>
-            
-            <h3>API-Einstellungen</h3>
-            
-            <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: not-allowed; opacity: 0.6;">
-                    <input type="checkbox" disabled checked>
-                    <span>UAV-BOS API aktivieren</span>
-                </label>
-                <small style="color: #64748b; font-style: italic;">🚧 Diese Funktion ist in Kürze verfügbar (Coming Soon)</small>
             </div>
             
             <button type="submit" class="btn-submit">Einrichten und loslegen</button>
