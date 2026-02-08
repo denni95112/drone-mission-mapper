@@ -159,7 +159,18 @@ $map_zoom = $config['map_default_zoom'] ?? 6;
                                     </div>
                                     <div id="num-areas-container">
                                         <label for="num_areas">Anzahl Bereiche:</label>
-                                        <input type="number" id="num_areas" name="num_areas" min="1" required placeholder="z.B. 10" value="10">
+                                        <select id="num_areas" name="num_areas" required>
+                                            <option value="1">1</option>
+                                            <option value="4">4</option>
+                                            <option value="9" selected>9</option>
+                                            <option value="16">16</option>
+                                            <option value="25">25</option>
+                                            <option value="36">36</option>
+                                            <option value="49">49</option>
+                                            <option value="64">64</option>
+                                            <option value="81">81</option>
+                                            <option value="100">100</option>
+                                        </select>
                                         <span id="num_areas_display" style="display: none; padding: 0.5rem; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 0.375rem; color: #1e293b; font-weight: 500;"></span>
                                     </div>
                                     <div id="field-size-container" style="display: none;">
@@ -322,6 +333,7 @@ $map_zoom = $config['map_default_zoom'] ?? 6;
                                 <div id="legend-progress-bar" style="height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); width: 0%; transition: width 0.3s ease; border-radius: 4px;"></div>
                             </div>
                             <div id="legend-progress-label" style="margin-top: 0.5rem; font-size: 0.75rem; color: #64748b; text-align: center;">Felder erledigt</div>
+                            <div id="legend-progress-hint" style="margin-top: 0.25rem; font-size: 0.7rem; color: #94a3b8; text-align: center;">Strg+Klick zum Markieren</div>
                         </div>
                         
                         <div class="form-group" style="margin-bottom: 1rem;">

@@ -328,8 +328,8 @@ class ViewOnlyMissionManager {
         }
         
         if (!this.missionData.num_areas || this.missionData.num_areas === '' || this.missionData.num_areas === 0) {
-            console.warn('Mission data missing num_areas, defaulting to 10');
-            this.missionData.num_areas = 10;
+            console.warn('Mission data missing num_areas, defaulting to 9');
+            this.missionData.num_areas = 9;
         }
         
         console.log('Proceeding with visualization. num_areas:', this.missionData.num_areas);
@@ -383,7 +383,7 @@ class ViewOnlyMissionManager {
         }
         
         // Calculate grid dimensions
-        const numAreas = parseInt(this.missionData.num_areas) || 10;
+        const numAreas = parseInt(this.missionData.num_areas) || 9;
         console.log('Calculating grid for', numAreas, 'areas');
         let gridLength = Math.ceil(Math.sqrt(numAreas));
         let gridHeight = Math.ceil(numAreas / gridLength);

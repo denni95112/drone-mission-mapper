@@ -119,6 +119,11 @@ class MissionManager {
         this.map.on('click', (e) => {
             // Only place icon if icon type is selected
             if (this.selectedIconType) {
+                // Disable placement in timeline history mode
+                if (window.zeitstrahlManager && !window.zeitstrahlManager.isLiveMode) {
+                    this.showStatus('Icon-Platzierung im Historienmodus deaktiviert. Wechseln Sie zu Live.', 'error');
+                    return;
+                }
                 // Check if drawing is active by checking if any draw handler is currently drawing
                 let isDrawingActive = false;
                 if (this.drawControl && this.drawControl._toolbars) {
@@ -520,10 +525,11 @@ class MissionManager {
         let numAreas, fieldSize;
         
         if (gridMode === 'num-areas') {
-            // Mode 1: Number of areas specified
-            numAreas = parseInt(document.getElementById('num_areas').value);
-            if (!missionId || !numAreas || numAreas < 1) {
-                this.showStatus('Bitte füllen Sie alle Felder aus.', 'error');
+            // Mode 1: Number of areas specified (dropdown: 1, 4, 9, 16, ...)
+            const numAreasEl = document.getElementById('num_areas');
+            numAreas = parseInt(numAreasEl ? numAreasEl.value : '', 10);
+            if (!missionId || !Number.isInteger(numAreas) || numAreas < 1) {
+                this.showStatus('Bitte füllen Sie alle Felder aus (Mission-ID und Anzahl Bereiche).', 'error');
                 return;
             }
         } else {
@@ -557,13 +563,19 @@ class MissionManager {
         const lngMeters = Math.abs(lngDiff * 111000 * Math.cos((ne.lat + sw.lat) / 2 * Math.PI / 180));
         const totalArea = latMeters * lngMeters;
         
+        if (!Number.isFinite(totalArea) || totalArea <= 0) {
+            this.showStatus('Bitte zeichnen Sie eine Fläche mit gültiger Größe (nicht nur eine Linie oder einen Punkt).', 'error');
+            return;
+        }
+        
         let gridLength, gridHeight;
         
         if (gridMode === 'num-areas') {
             // Mode 1: Calculate field size from number of areas
             // Try to create a grid that's as square-like as possible
             const areaPerCell = totalArea / numAreas;
-            const aspectRatio = lngMeters / latMeters;
+            let aspectRatio = latMeters > 0 ? lngMeters / latMeters : 1;
+            if (!Number.isFinite(aspectRatio) || aspectRatio <= 0) aspectRatio = 1;
             
             if (aspectRatio > 1) {
                 // Wider than tall
@@ -574,9 +586,15 @@ class MissionManager {
                 gridLength = Math.ceil(Math.sqrt(numAreas * aspectRatio));
                 gridHeight = Math.ceil(numAreas / gridLength);
             }
+            gridLength = Math.max(1, gridLength);
+            gridHeight = Math.max(1, gridHeight);
             
             // Calculate actual field size from the grid dimensions
             fieldSize = Math.sqrt(areaPerCell);
+            if (!Number.isFinite(fieldSize) || fieldSize <= 0) {
+                this.showStatus('Bitte zeichnen Sie eine größere Fläche für die gewählte Anzahl Bereiche.', 'error');
+                return;
+            }
         } else {
             // Mode 2: Calculate number of areas from field size
             // Calculate how many fields fit in each direction
@@ -623,14 +641,22 @@ class MissionManager {
             formData.append('bounds_ne_lng', ne.lng);
             formData.append('bounds_sw_lat', sw.lat);
             formData.append('bounds_sw_lng', sw.lng);
-            formData.append('num_areas', numAreas);
+            formData.append('num_areas', String(Number(numAreas)));
             
             const response = await safeFetch('api/mission.php', {
                 method: 'POST',
                 body: formData
             });
             
-            const data = await response.json();
+            const rawText = await response.text();
+            let data;
+            try {
+                data = rawText ? JSON.parse(rawText) : {};
+            } catch (e) {
+                console.error('Grid API response was not JSON:', rawText);
+                this.showStatus('Fehler beim Erstellen des Rasters: Ungültige Server-Antwort.', 'error');
+                return;
+            }
             
             if (data.success) {
                 this.showStatus(`Raster erfolgreich erstellt! (${gridLength}x${gridHeight} = ${gridLength * gridHeight} Bereiche)`, 'success');
@@ -1301,7 +1327,10 @@ class MissionManager {
             missionIdInput.value = missionData.mission_id || '';
         }
         if (numAreasInput) {
-            numAreasInput.value = missionData.num_areas || '';
+            const validAreas = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100];
+            const n = parseInt(missionData.num_areas, 10) || 9;
+            const chosen = validAreas.includes(n) ? n : validAreas.reduce((prev, curr) => Math.abs(curr - n) < Math.abs(prev - n) ? curr : prev);
+            numAreasInput.value = String(chosen);
         }
         
         // Check if mission has grid (raster)
@@ -1382,7 +1411,7 @@ class MissionManager {
             missionIdInput.disabled = false;
         }
         if (numAreasInput) {
-            numAreasInput.value = '10';
+            numAreasInput.value = '9';
             numAreasInput.disabled = false;
         }
         if (fieldSizeInput) {
@@ -2095,8 +2124,11 @@ class MissionManager {
                     })
                 });
                 
-                // Click handler to toggle done status
+                // Click handler to toggle done status (Ctrl+Click required to avoid accidental marks when moving icons)
                 cellPolygon.on('click', (e) => {
+                    if (!(e.originalEvent && e.originalEvent.ctrlKey)) {
+                        return;
+                    }
                     // Don't toggle if icon placement is active
                     if (this.selectedIconType) {
                         return;
@@ -2671,8 +2703,24 @@ class MissionManager {
         }
     }
     
+    /**
+     * Cancel icon placement mode (e.g. when switching timeline to history mode).
+     */
+    cancelIconPlacementMode() {
+        if (!this.selectedIconType) return;
+        this.selectedIconType = null;
+        document.querySelectorAll('.icon-type-btn').forEach(btn => btn.classList.remove('active'));
+        this.map.getContainer().style.cursor = '';
+    }
+    
     selectIconType(iconType) {
         console.log('selectIconType called', iconType);
+        
+        // Disable icon type selection when timeline is in history mode
+        if (window.zeitstrahlManager && !window.zeitstrahlManager.isLiveMode) {
+            this.showStatus('Icon-Platzierung im Historienmodus deaktiviert. Wechseln Sie zu Live.', 'error');
+            return;
+        }
         
         // Update button states
         document.querySelectorAll('.icon-type-btn').forEach(btn => {
@@ -2710,6 +2758,14 @@ class MissionManager {
             document.querySelectorAll('.icon-type-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
+            this.map.getContainer().style.cursor = '';
+            return;
+        }
+        
+        if (window.zeitstrahlManager && !window.zeitstrahlManager.isLiveMode) {
+            this.showStatus('Icon-Platzierung im Historienmodus deaktiviert. Wechseln Sie zu Live.', 'error');
+            this.selectedIconType = null;
+            document.querySelectorAll('.icon-type-btn').forEach(btn => btn.classList.remove('active'));
             this.map.getContainer().style.cursor = '';
             return;
         }
@@ -2920,7 +2976,20 @@ class MissionManager {
             });
             
             const data = await response.json();
-            if (!data.success) {
+            if (data.success && window.zeitstrahlManager && this.currentMissionId) {
+                // Refresh timeline so history view shows updated label
+                setTimeout(async () => {
+                    try {
+                        const missionData = window.zeitstrahlManager.currentMission || {
+                            mission_id: this.currentMissionId,
+                            status: this.currentMissionStatus || 'pending'
+                        };
+                        await window.zeitstrahlManager.loadMission(this.currentMissionId, missionData);
+                    } catch (err) {
+                        console.error('Error reloading timeline after label update:', err);
+                    }
+                }, 200);
+            } else if (!data.success) {
                 console.error('Error updating icon label:', data.error);
             }
         } catch (error) {
@@ -2960,6 +3029,21 @@ class MissionManager {
                     longitude: latlng.lng,
                     label_text: labelText
                 });
+                
+                // Refresh timeline so the move appears in history
+                if (window.zeitstrahlManager && this.currentMissionId) {
+                    setTimeout(async () => {
+                        try {
+                            const missionData = window.zeitstrahlManager.currentMission || {
+                                mission_id: this.currentMissionId,
+                                status: this.currentMissionStatus || 'pending'
+                            };
+                            await window.zeitstrahlManager.loadMission(this.currentMissionId, missionData);
+                        } catch (err) {
+                            console.error('Error reloading timeline after icon move:', err);
+                        }
+                    }, 300);
+                }
             } else {
                 console.error('Error updating icon position:', data.error);
             }

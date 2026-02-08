@@ -208,11 +208,7 @@ async function safeFetch(url, options = {}) {
     
     try {
         const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+        // Return response so callers can read body and show API error messages (e.g. 400)
         return response;
     } catch (error) {
         console.error('Fetch error:', error);

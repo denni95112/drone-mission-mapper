@@ -884,6 +884,11 @@ class ZeitstrahlManager {
             // Show regular icons in live mode
             this.showRegularIcons();
             
+            // Reload icons from server so labels and positions are current (fixes labels disappearing after history→live)
+            if (window.missionManager && this.currentMissionId) {
+                window.missionManager.loadIcons(this.currentMissionId);
+            }
+            
             // Disable playback controls
             if (playPauseBtn) playPauseBtn.disabled = true;
             if (speedBtn) speedBtn.disabled = true;
@@ -905,6 +910,11 @@ class ZeitstrahlManager {
             
             // Show history info banner in history mode
             this.showHistoryInfo();
+            
+            // Cancel icon placement mode so user cannot place icons while viewing history
+            if (window.missionManager && typeof window.missionManager.cancelIconPlacementMode === 'function') {
+                window.missionManager.cancelIconPlacementMode();
+            }
             
             // Hide regular icons in history mode
             this.hideRegularIcons();

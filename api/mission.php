@@ -86,7 +86,12 @@ try {
             
             if ($gridLength <= 0 || $gridHeight <= 0 || $fieldSize <= 0) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Grid dimensions and field size must be greater than 0']);
+                echo json_encode(['success' => false, 'error' => 'Grid dimensions and field size must be greater than 0']);
+                exit;
+            }
+            if ($numAreas === null || $numAreas <= 0) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'Anzahl Bereiche muss größer als 0 sein.']);
                 exit;
             }
             
