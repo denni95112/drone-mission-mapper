@@ -4,13 +4,13 @@ Eine webbasierte Anwendung zur Visualisierung und Verwaltung von Drohnen-Mission
 
 ## 📋 Beschreibung
 
-Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durchführung und Nachbereitung von Drohnen-Missionen. Die Anwendung ermöglicht die Erstellung von Missionsgebieten mit Raster-Grids, die Platzierung von Icons (Fahrzeuge, Personen, Drohnen, etc.), die Verfolgung von Drohnenpositionen und die Visualisierung von Missionsdaten auf einer interaktiven Karte.
+Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durchführung und Nachbereitung von Drohnen-Missionen. Die Anwendung ermöglicht die Erstellung von Missionsgebieten mit Raster-Grids, die Platzierung von Icons (Fahrzeuge, Personen, Drohnen, etc.), die Erfassung von Icon-Positionen über die Zeit und die Visualisierung von Missionsdaten auf einer interaktiven Karte mit Zeitstrahl.
 
 ## ✨ Features
 
 ### Mission Management
 - **Mission-Erstellung**: Erstelle Missionen mit oder ohne Raster-Grid
-- **Grid-Generierung**: Automatische Raster-Generierung für Rechteck- oder Ellipsen-Formen
+- **Grid-Generierung**: Automatische Raster-Generierung für Rechteck- oder Ellipsen-Formen 
 - **Mission-Status**: Verwaltung von Mission-Status (pending, active, completed)
 - **Mission-Sharing**: Token-basierte Freigabe von Missionen für externe Nutzer
 - **Mission-Export**: Export von Missionsdaten als CSV mit Adressauflösung
@@ -18,7 +18,7 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
 ### Karten-Funktionen
 - **Interaktive Karte**: OpenStreetMap-Integration mit Leaflet.js
 - **Mehrere Karten-Typen**: Standard, Gelände, Satellit
-- **Icon-Platzierung**: Platzierung verschiedener Icon-Typen auf der Karte
+- **Icon-Platzierung**: Platzierung verschiedener Icon-Typen auf der Karte (nur im Live-Modus des Zeitstrahls)
   - 🚗 Fahrzeug
   - 👤 Person
   - 🚁 Drohne
@@ -31,15 +31,10 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
 - **Bewegungsvisualisierung**: Anzeige von Bewegungswegen für Icons
 - **Legende**: Dynamische Legende für Missionsbereiche
 
-### Drohnen-Tracking
-- **Live-Tracking**: Echtzeit-Verfolgung von Drohnenpositionen
-- **Historische Daten**: Speicherung aller Drohnenpositionen in der Datenbank
-- **Batteriestatus**: Anzeige des Batteriestatus für jede Drohne
-- **Höhenanzeige**: Anzeige der Flughöhe
-
 ### Timeline (Zeitstrahl)
-- **Historische Wiedergabe**: Zeitbasierte Wiedergabe von Missionsdaten
-- **Live-Modus**: Echtzeit-Anzeige während aktiver Missionen
+- **Historische Wiedergabe**: Zeitbasierte Wiedergabe von Icon- und Missionsdaten
+- **Live-Modus**: Aktuelle Ansicht; Icon-Platzierung und -Bearbeitung nur im Live-Modus
+- **Historienmodus**: Nur Ansicht; Platzierung ist deaktiviert, um versehentliche Änderungen zu vermeiden
 - **Zeitsteuerung**: Slider-basierte Navigation durch die Missionshistorie
 - **Playback-Funktion**: Automatische Wiedergabe der Missionshistorie
 
@@ -55,7 +50,7 @@ Der Drohnen-Missions-Mapper ist eine PHP-basierte Webanwendung zur Planung, Durc
 - **Adress-Caching**: Intelligentes Caching von Adressdaten für bessere Performance
 
 ### Weitere Features
-- **Done-Fields**: Markierung abgeschlossener Bereiche in der Mission
+- **Done-Fields**: Markierung abgeschlossener Bereiche per **Strg+Klick** auf ein Rasterfeld (verhindert versehentliches Markieren beim Icon-Verschieben)
 - **View-Only-Modus**: Ansichtsmodus für geteilte Missionen
 - **Logging-System**: Umfassendes Logging-System mit konfigurierbaren Log-Levels
 - **Update-Checker**: Automatische Prüfung auf verfügbare Updates
@@ -183,12 +178,14 @@ drone-mission-mapper/
 │   ├── log.php                  # Logging API
 │   ├── log_icon.php             # Icon-Logging API
 │   ├── map_icons.php            # Icon-Verwaltung API
-│   └── mission.php               # Mission-Verwaltung API
+│   ├── migrations.php           # Datenbank-Migrationen API
+│   └── mission.php              # Mission-Verwaltung API
 ├── config/                      # Konfigurationsdateien
 │   ├── config.php               # Hauptkonfiguration (wird beim Setup erstellt)
 │   └── config.php.example       # Beispielkonfiguration
 ├── css/                         # Stylesheets
 │   ├── about.css
+│   ├── changelog.css
 │   ├── delete_missions.css
 │   ├── login.css
 │   ├── map.css
@@ -204,6 +201,7 @@ drone-mission-mapper/
 │   ├── error_reporting.php      # Fehlerbehandlung
 │   ├── footer.php               # Footer-Komponente
 │   ├── header.php               # Header-Komponente
+│   ├── migration_runner.php     # Migration-Runner
 │   ├── security_headers.php     # Sicherheits-Header
 │   └── utils.php                # Utility-Funktionen
 ├── js/                          # JavaScript-Dateien
@@ -231,11 +229,12 @@ drone-mission-mapper/
 │   └── view_missions.js
 ├── db/                          # Datenbankverzeichnis (wird automatisch erstellt)
 ├── logs/                        # Log-Dateien (wird automatisch erstellt)
+├── migrations/                  # Datenbank-Migrationen
 ├── tmp/                         # Temporäre Dateien
 │   └── exports/                 # Export-Dateien
-├── uploads/                     # Upload-Verzeichnis
-│   └── logos/                   # Logo-Uploads
-├── api/                         # API-Endpunkte
+├── updater/                     # Update-Tool (Admin)
+├── uploads/                    # Upload-Verzeichnis
+│   └── logos/                  # Logo-Uploads
 ├── auth.php                     # Authentifizierung
 ├── index.php                    # Login-Seite
 ├── logout.php                   # Logout-Funktion
@@ -243,6 +242,8 @@ drone-mission-mapper/
 ├── setup.php                    # Erstkonfiguration
 ├── setup_database.php           # Datenbankinitialisierung
 ├── settings.php                 # Einstellungen
+├── migrations.php               # Datenbank-Update-Seite
+├── changelog.php                # Changelog
 ├── view_mission.php             # Mission-Ansicht (View-Only)
 ├── view_missions.php            # Missions-Übersicht
 ├── view_logs.php                # Log-Ansicht
@@ -292,7 +293,8 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 
 1. Wähle eine Form (Rechteck oder Ellipse)
 2. Zeichne das Missionsgebiet auf der Karte
-3. Konfiguriere Raster-Parameter (Feldgröße, Anzahl der Bereiche)
+3. Konfiguriere Raster-Parameter:
+   - **Anzahl Bereiche**: Dropdown (1, 4, 9, 16, 25, 36, 49, 64, 81, 100) oder **Feldgröße** in m²
 4. Gib eine Missions-ID ein
 5. Klicke auf "Raster generieren"
 
@@ -304,9 +306,10 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 
 ### Icons platzieren
 
-1. Wähle einen Icon-Typ aus der Sidebar
-2. Klicke auf die Karte, um ein Icon zu platzieren
-3. Optional: Gib einen Label-Text ein
+1. Stelle sicher, dass der Zeitstrahl im **Live-Modus** ist (nicht im Historienmodus)
+2. Wähle einen Icon-Typ aus der Sidebar
+3. Klicke auf die Karte, um ein Icon zu platzieren
+4. Optional: Gib einen Label-Text ein (klick auf das Icon, Bearbeiten, Speichern)
 
 ### GPS-Position teilen
 
@@ -319,8 +322,15 @@ Die Konfiguration erfolgt über `config/config.php`, die beim ersten Setup erste
 
 1. Öffne eine Mission mit Positionsdaten
 2. Klicke auf den Timeline-Button
-3. Verwende den Slider, um durch die Zeit zu navigieren
-4. Verwende die Playback-Funktion für automatische Wiedergabe
+3. **Live** (🟢): Aktuelle Daten; Icons platzieren und bearbeiten möglich
+4. **Historie** (🔴): Slider und Playback; nur Ansicht, keine Icon-Platzierung
+5. Verwende den Slider, um durch die Zeit zu navigieren
+6. Verwende die Playback-Funktion für automatische Wiedergabe
+
+### Bereiche als erledigt markieren
+
+1. **Strg+Klick** (Ctrl+Click) auf ein Rasterfeld, um es als erledigt zu markieren bzw. die Markierung aufzuheben
+2. Der Hinweis „Strg+Klick zum Markieren“ erscheint in der Legende beim Fortschritt
 
 ### KML importieren/exportieren
 
